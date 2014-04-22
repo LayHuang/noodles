@@ -1,7 +1,7 @@
 <?php
 
 /**
- * OpenAPI V3 SDK 上传文件类接口示例代码。适用于所有需要发送multipart/form-data格式的post请求的OpenAPI。
+ * OpenAPI V3 SDK 示例代码，适用于大部分OpenAPI。如果是上传文件类OpenAPI，请参考本SDK包中的“Test_UploadFile.php”文件中的示例代码。
  *
  * @version 3.0.4
  * @author open.qq.com
@@ -9,8 +9,8 @@
  * @History:
  *               3.0.4 | coolinchen | 2012-09-07 10:20:12 | initialization
  */
-header("Content-type: text/html; charset=utf-8");
 
+header("Content-type: text/html; charset=utf-8");
 
 require_once 'OpenApiV3.php';
 
@@ -28,38 +28,39 @@ $openid = $_GET['openid'];
 $openkey = $_GET['openkey'];
 
 // 所要访问的平台, pf的其他取值参考wiki文档: http://wiki.open.qq.com/wiki/API3.0%E6%96%87%E6%A1%A3 
-$pf = 'tapp';
+$pf = 'qzone';
 
 
 $sdk = new OpenApiV3($appid, $appkey);
 $sdk->setServerName($server_name);
 
-$ret = add_weibo_pic($sdk, $openid, $openkey, $pf);
+$ret = get_user_info($sdk, $openid, $openkey, $pf);
 print_r("===========================\n");
 print_r($ret);
 
+
+
 /**
- * 发表带图片的微博
+ * 获取好友资料
  *
  * @param object $sdk OpenApiV3 Object
  * @param string $openid openid
  * @param string $openkey openkey
  * @param string $pf 平台
- * @return array 微博接口调用结果
+ * @return array 好友资料数组
  */
-function add_weibo_pic($sdk, $openid, $openkey, $pf)
+function get_user_info($sdk, $openid, $openkey, $pf)
 {
 	$params = array(
 		'openid' => $openid,
 		'openkey' => $openkey,
 		'pf' => $pf,
-		'content'=>"图片描述。。@xxx",
 	);
 	
-	$array_files	= array();
-	$array_files['pic'] = '@test.jpg';
-	$script_name = '/v3/t/add_pic_t';
-	return $sdk->apiUploadFile($script_name, $params,$array_files);
+	$script_name = '/v3/user/get_info';
+	return $sdk->api($script_name, $params,'post');
+	
+	
 }
 
 // end of script
