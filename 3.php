@@ -28,39 +28,38 @@ $openid = $_GET['openid'];
 $openkey = $_GET['openkey'];
 
 // 所要访问的平台, pf的其他取值参考wiki文档: http://wiki.open.qq.com/wiki/API3.0%E6%96%87%E6%A1%A3 
-$pf = 'qzone';
+$pf = 'tapp';
+
 
 $sdk = new OpenApiV3($appid, $appkey);
 $sdk->setServerName($server_name);
 
-$ret = get_user_info($sdk, $openid, $openkey, $pf);
+$ret = add_weibo_pic($sdk, $openid, $openkey, $pf);
 print_r("===========================\n");
 print_r($ret);
 
-
-
 /**
- * 获取好友资料
+ * 发表带图片的微博
  *
  * @param object $sdk OpenApiV3 Object
  * @param string $openid openid
  * @param string $openkey openkey
  * @param string $pf 平台
- * @return array 好友资料数组
+ * @return array 微博接口调用结果
  */
-function get_user_info($sdk, $openid, $openkey, $pf)
+function add_weibo_pic($sdk, $openid, $openkey, $pf)
 {
 	$params = array(
 		'openid' => $openid,
 		'openkey' => $openkey,
 		'pf' => $pf,
+		'content'=>"图片描述。。@xxx",
 	);
 	
-	$script_name = '/v3/user/get_info';
-	return $sdk->api($script_name, $params,'post');
-	
-	
+	$array_files	= array();
+	$array_files['pic'] = '@test.jpg';
+	$script_name = '/v3/t/add_pic_t';
+	return $sdk->apiUploadFile($script_name, $params,$array_files);
 }
-
 
 // end of script
